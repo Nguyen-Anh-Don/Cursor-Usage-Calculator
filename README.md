@@ -1,5 +1,411 @@
 # Cursor Usage Calculator
 
+<div align="center">
+
+**🌐 Language / Ngôn ngữ:** [English](#english) | [Tiếng Việt](#tiếng-việt)
+
+</div>
+
+---
+
+<a id="english"></a>
+# English
+
+A Chrome extension that helps you track and analyze your Cursor AI usage in detail with powerful and easy-to-use features.
+
+---
+
+## 📷 Demo Interface
+
+![Demo ảnh Popup Extension](https://upanh.nhatkythuthuat.com/images/2025/11/18/image.png)
+
+---
+
+## 🌟 Key Features
+
+### 📊 Automatic Badge Display
+- **Badge on icon**: Displays usage percentage directly on the extension icon
+- **Auto-update**: Refreshes every 15 minutes for real-time tracking
+- **Smart colors**: 
+  - 🟢 Green (< 70%): Normal usage
+  - 🟡 Yellow (70-90%): Needs attention
+  - 🔴 Red (≥ 90%): Near limit
+
+### 📈 Quick Info Popup
+When clicking the extension icon, you'll see:
+- **Plan information**: Days remaining until plan refresh
+- **Current requests**: Total requests in the current month
+- **Usage limits**: Percentage used with progress bar
+- **Total tokens**: Total tokens used
+- **API cost**: API cost in USD
+- **Models Cost Breakdown**: Detailed cost breakdown by model (expandable)
+
+### 📉 Mini Charts on Popup
+- **Usage % Over Time**: Line chart showing usage trends
+- **Breakdown by Model**: Pie chart analyzing by model
+
+### 📊 Full Charts on Dashboard
+When accessing `cursor.com/dashboard?tab=usage`, the extension automatically adds:
+- **By Model**: Horizontal bar chart showing requests by model
+- **By Time of Day**: Line chart showing usage by hour of day
+- **By Day of Week**: Bar chart showing usage by day of week
+- **By Month**: Bar chart showing usage trends by month
+
+### 🧮 Calculation from Dashboard Table
+- **Automatic calculation**: Automatically calculates totals when entering the usage page
+- **Multi-page handling**: Automatically browses through all pages for accurate calculation
+- **Detailed statistics**:
+  - Total requests
+  - Successful/failed requests
+  - Total tokens
+  - Total cost
+  - Success rate
+- **Data export**: Export results to CSV file
+
+### ⚙️ Cache Management
+- **Cache time options**: 1 minute or 3 minutes
+- **Auto clear**: Cache automatically expires and refreshes
+- **Manual clear**: Clear cache button in popup
+- **Performance optimization**: Fast loading when viewing data again
+
+### 🔄 Supports Both Pricing Models
+- **Old quota-based limits**: Supports old plans with request limits
+- **New unlimited rate limits**: Supports new plans with cost-based limits
+- **Auto detection**: Extension automatically detects your plan type
+
+### 📱 Comprehensive Analytics
+- **Model analysis**: See which model is used most
+- **Time analysis**: See when usage is highest
+- **Day analysis**: See which day of week has most usage
+- **Monthly trends**: Track usage trends over months
+- **Cost tracking**: Track costs and predictions
+
+### 🔐 Automatic Authentication
+- **Auto cookie retrieval**: Extension automatically retrieves cookies from browser
+- **No manual login**: Works immediately when logged into Cursor
+
+## 🚀 Installation
+
+### From Chrome Web Store
+(Link will be updated when extension is published)
+
+### Manual Installation (Developer Mode)
+1. Download or clone this repository
+2. Open Chrome and go to `chrome://extensions/`
+3. Enable **Developer mode** (top right corner)
+4. Click **Load unpacked**
+5. Select the folder containing the extension
+
+## 📖 Usage Guide
+
+### First Time Use
+1. Make sure you're logged into Cursor in your browser
+2. Extension will automatically retrieve cookies and start tracking
+3. Badge will appear on icon with usage percentage
+
+### View Detailed Information
+1. Click the extension icon on the toolbar
+2. Popup will display:
+   - Plan information and days remaining
+   - Current requests
+   - Usage limits with progress bar
+   - Total tokens and API cost
+   - Models Cost Breakdown (click to expand)
+   - Mini charts
+
+### View Full Charts
+1. Visit `https://cursor.com/dashboard?tab=usage`
+2. Extension automatically adds "Usage Analytics" section with charts:
+   - By Model
+   - By Time of Day
+   - By Day of Week
+   - By Month
+
+### Calculate from Table
+1. Go to `cursor.com/dashboard?tab=usage`
+2. Extension automatically calculates and displays summary block
+3. If auto-calculate is off, click "Calculate Usage" button to calculate manually
+4. Click "Export Summary Data" to export CSV
+
+### Settings
+In the popup, you can:
+- **Show Usage Badge**: Toggle badge display (default: on)
+- **Auto Calculate**: Automatically calculate when entering usage page (default: on)
+- **Cache Duration**: Choose cache time 1 minute or 3 minutes
+- **Proxy URL**: Configure proxy server URL (see [Proxy Server](#-proxy-server-optional) section for more details)
+- **Clear Cache**: Manually clear cache
+
+## 🎯 Use Cases
+
+### For Developers
+- Track usage to avoid exceeding limits
+- Analyze usage patterns to optimize workflow
+- Predict monthly costs
+
+### For Teams
+- Monitor team usage
+- Analyze usage trends
+- Manage budget effectively
+
+### For Individuals
+- Understand Cursor usage
+- Optimize usage time
+- Avoid unnecessary costs
+
+## 🔧 Project Structure
+
+```
+Cursor Usage/
+├── manifest.json          # Manifest file for extension
+├── background.js          # Service worker handling badge and cache
+├── popup.html            # Popup UI
+├── popup.js              # Popup logic
+├── content.js            # Script running on dashboard page
+├── proxy.php             # Proxy server (optional, upload to server)
+├── assets/
+│   └── js/
+│       └── chart.min.js  # Chart.js library
+├── icons/                # Extension icons
+└── _locales/             # i18n messages
+    ├── en/
+    └── vi/
+```
+
+## 🛠️ Technologies Used
+
+- **Manifest V3**: Using Chrome Extension Manifest V3
+- **Chart.js**: Chart library
+- **Chrome Storage API**: Store settings and cache
+- **Chrome Cookies API**: Auto retrieve cookies
+- **Chrome Alarms API**: Auto refresh badge
+
+## 📝 Permissions
+
+Extension requires the following permissions:
+- `cookies`: To retrieve cookies from cursor.com
+- `storage`: To store settings and cache
+- `alarms`: To automatically refresh badge
+- `activeTab`: To run script on dashboard page
+
+## 🔒 Privacy
+
+- Extension only reads cookies from cursor.com
+- Data is stored locally on your machine
+- **When using proxy**: Cookies are sent to your proxy server to forward requests to Cursor API. Proxy does not store cookies or data.
+- **When not using proxy**: Cookies are only used to fetch data from Cursor API directly
+- No data is sent to third-party servers except the proxy server you configure
+
+## 🌐 Proxy Server (Optional)
+
+The extension supports using a proxy server to handle CORS issues and security when calling the API directly from the browser.
+
+### Why Use a Proxy?
+
+- **Solve CORS**: Some browsers may block direct requests to Cursor API due to CORS policy
+- **Cookie security**: Proxy helps handle cookies more securely
+- **Customization**: You can host your own proxy server
+
+### Proxy Server Installation
+
+#### System Requirements
+
+- **PHP 7.4+** or higher
+- **cURL extension** enabled in PHP
+- **Web server** (Apache, Nginx, or PHP built-in server)
+
+#### Installation Steps
+
+1. **Upload proxy.php file to server**
+   ```bash
+   # Upload proxy.php file to your web directory
+   # Example: /var/www/html/extension/cursor-used/proxy.php
+   ```
+
+2. **Check file access permissions**
+   ```bash
+   # Ensure file has read permissions
+   chmod 644 proxy.php
+   ```
+
+3. **Check cURL extension**
+   ```bash
+   # Check if PHP has cURL
+   php -m | grep curl
+   ```
+
+4. **Test proxy server**
+   ```bash
+   # Test by accessing proxy URL in browser
+   # If you see JSON response with message "Cookie found..." it's successful
+   ```
+
+#### Configure Extension to Use Proxy
+
+1. **Open extension popup** (click icon)
+2. **Scroll to Settings section**
+3. **Find "Proxy URL" field**
+4. **Enter proxy server URL**:
+   - If proxy.php is in root directory: `https://yourdomain.com/proxy.php`
+   - If proxy.php is in subdirectory: `https://yourdomain.com/extension/cursor-used/`
+   - Extension will automatically add `proxy.php` if URL ends with `/`
+5. **URL will be saved automatically** when you change it
+
+#### Configuration Examples
+
+```
+Proxy URL: https://addlivetag.com/extension/cursor-used/
+```
+
+or
+
+```
+Proxy URL: https://yourdomain.com/proxy.php
+```
+
+#### Using Direct API (No Proxy)
+
+- **Leave Proxy URL field empty** or enter empty string
+- Extension will call API directly to Cursor
+- Requires browser to support CORS and cookies
+
+### How Proxy Works
+
+1. **Extension sends request** to proxy server with:
+   - Cookie `WorkosCursorSessionToken` in request body
+   - JSON payload with filter/query information
+
+2. **Proxy server**:
+   - Receives request from extension
+   - Retrieves cookie from request body or header
+   - Forwards request to Cursor API (`https://cursor.com/api/dashboard/get-filtered-usage-events`)
+   - Returns response to extension
+
+3. **Extension receives response** and processes data as normal
+
+### Proxy Security
+
+- **Cookies only transmitted via HTTPS**: Ensure your proxy server uses SSL/TLS
+- **No cookie storage**: Proxy does not store cookies, only forwards requests
+- **CORS headers**: Proxy automatically adds CORS headers so extension can call
+
+### Troubleshooting Proxy
+
+#### Proxy Not Working
+
+1. **Check if proxy URL is correct**
+   - Ensure URL is accessible from browser
+   - Test by opening URL in browser
+
+2. **Check PHP and cURL**
+   ```bash
+   php -v
+   php -m | grep curl
+   ```
+
+3. **Check PHP error logs**
+   - View web server error log
+   - Enable error reporting in PHP for debugging
+
+4. **Check SSL certificate**
+   - Ensure SSL certificate is valid
+   - Extension only calls HTTPS URLs
+
+#### "Missing WorkosCursorSessionToken cookie" Error
+
+1. **Ensure you're logged into Cursor** in browser
+2. **Check if cookie exists**:
+   - Open DevTools > Application > Cookies
+   - Find `WorkosCursorSessionToken` cookie at `cursor.com`
+
+#### CORS Error
+
+1. **Check CORS headers** in proxy.php
+2. **Ensure proxy server returns correct headers**:
+   ```
+   Access-Control-Allow-Origin: *
+   Access-Control-Allow-Methods: GET, POST, OPTIONS
+   Access-Control-Allow-Headers: Content-Type, Accept, Cookie
+   ```
+
+#### 500 Internal Server Error
+
+1. **Check PHP error log**
+2. **Check if cURL is working**
+3. **Check timeout settings** in proxy.php
+4. **Check PHP memory limit**
+
+### Default Proxy
+
+Extension has a default proxy at:
+```
+https://addlivetag.com/extension/cursor-used/
+```
+
+You can use this proxy or host your own proxy server.
+
+## 🐛 Troubleshooting
+
+### Badge Not Displaying
+1. Check "Show Usage Badge" is enabled in popup
+2. Ensure you're logged into Cursor
+3. Refresh extension or reload page
+
+### Data Not Updating
+1. Click "Clear Cache" in popup
+2. Wait a few seconds for extension to fetch new data
+3. Reload popup
+
+### Charts Not Displaying on Dashboard
+1. Ensure you're on `cursor.com/dashboard?tab=usage` page
+2. Check console for errors
+3. Reload page
+
+### Calculation Not Accurate
+1. Ensure table is fully loaded
+2. If there are multiple pages, extension will automatically browse through
+3. Click "Calculate Usage" to recalculate manually
+
+## 🤝 Contributing
+
+All contributions are welcome! Please:
+1. Fork repository
+2. Create feature branch
+3. Commit changes
+4. Push and create Pull Request
+
+## 📄 License
+
+MIT License - See LICENSE file for more details
+
+## 👨‍💻 Author
+
+Developed to help the Cursor user community track and optimize their AI coding assistant usage.
+
+## 🙏 Acknowledgments
+
+- Thanks to Cursor team for creating a great tool
+- Thanks to Chart.js for the powerful chart library
+- Thanks to the open source community
+
+> **Note:** This tool references ideas and <br>
+> some methods from the [Cursor Usage](https://chromewebstore.google.com/detail/cursor-usage/feemeooihcjjkddafjjldpajadjhlela) extension.
+
+## 📞 Support
+
+If you encounter issues or have questions:
+- Open an issue on GitHub
+- Check documentation
+- See troubleshooting section
+
+---
+
+**Note**: This extension is not an official Cursor product. This is a community tool to support users.
+
+---
+
+<a id="tiếng-việt"></a>
+# Tiếng Việt
+
 Tiện ích mở rộng Chrome giúp theo dõi và phân tích chi tiết việc sử dụng Cursor AI của bạn với các tính năng mạnh mẽ và dễ sử dụng.
 
 ---
@@ -377,7 +783,7 @@ MIT License - Xem file LICENSE để biết thêm chi tiết
 - Cảm ơn cộng đồng open source
 
 > **Ghi chú:** Công cụ này có tham khảo ý tưởng và <br>
-một số phương pháp từ tiện ích [Cursor Usage](https://chromewebstore.google.com/detail/cursor-usage/feemeooihcjjkddafjjldpajadjhlela).
+> một số phương pháp từ tiện ích [Cursor Usage](https://chromewebstore.google.com/detail/cursor-usage/feemeooihcjjkddafjjldpajadjhlela).
 
 ## 📞 Support
 
@@ -389,4 +795,3 @@ Nếu gặp vấn đề hoặc có câu hỏi:
 ---
 
 **Lưu ý**: Extension này không phải là sản phẩm chính thức của Cursor. Đây là một công cụ của cộng đồng để hỗ trợ người dùng.
-
