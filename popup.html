@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Cursor Usage</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 400px;
+            max-height: 600px;
+            padding: 16px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #1e1e1e;
+            color: #ffffff;
+            overflow-y: auto;
+        }
+
+        .header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        .usage-info {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            color: #a0a0a0;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .info-subtext {
+            font-size: 11px;
+            color: #888;
+            margin-left: 4px;
+        }
+
+        .reset-info {
+            color: #60a5fa;
+        }
+
+        .reset-info .info-value {
+            color: #60a5fa;
+        }
+
+        .analytics-info {
+            color: #4ade80;
+        }
+
+        .analytics-info .info-value {
+            color: #4ade80;
+        }
+
+        .warning {
+            padding: 8px;
+            background: rgba(233, 179, 59, 0.15);
+            border-left: 3px solid #e9b33b;
+            border-radius: 4px;
+            margin: 8px 0;
+        }
+
+        .warning-critical {
+            padding: 8px;
+            background: rgba(244, 67, 54, 0.15);
+            border-left: 3px solid #f44336;
+            border-radius: 4px;
+            margin: 8px 0;
+        }
+
+        .warning-message {
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .warning .warning-message {
+            color: #e9b33b;
+        }
+
+        .warning-critical .warning-message {
+            color: #f44336;
+        }
+
+        .usage-bar-container {
+            margin: 12px 0;
+        }
+
+        .usage-bar {
+            height: 8px;
+            background: #3a3a3a;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .usage-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #63a11a 0%, #e9b33b 70%, #f44336 100%);
+            transition: width 0.3s ease, background 0.3s ease;
+        }
+
+        .usage-bar-fill.high {
+            background: linear-gradient(90deg, #e9b33b 0%, #f44336 100%);
+        }
+
+        .usage-bar-fill.full {
+            background: #f44336;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 12px 0;
+        }
+
+        .chart-wrapper {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .chart-title {
+            font-size: 12px;
+            color: #a0a0a0;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .chart-canvas {
+            max-height: 120px;
+        }
+
+        .model-breakdown {
+            margin-top: 12px;
+        }
+
+        .model-breakdown summary {
+            cursor: pointer;
+            color: #a0a0a0;
+            font-size: 13px;
+            padding: 8px;
+            background: #2a2a2a;
+            border-radius: 4px;
+            user-select: none;
+        }
+
+        .model-breakdown summary:hover {
+            background: #3a3a3a;
+        }
+
+        .model-breakdown-content {
+            margin-top: 8px;
+            padding: 8px;
+            background: #1e1e1e;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .model-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 12px;
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        .model-item:last-child {
+            border-bottom: none;
+        }
+
+        .model-name {
+            color: #ffffff;
+        }
+
+        .model-cost {
+            color: #a0a0a0;
+        }
+
+        .settings-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #3a3a3a;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .setting-label {
+            flex: 1;
+            font-size: 14px;
+            color: #ffffff;
+        }
+
+        .setting-description {
+            font-size: 12px;
+            color: #a0a0a0;
+            margin-top: 4px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            margin-left: 12px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #555;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #0a6cff;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        .cache-duration-select {
+            margin-left: 12px;
+            padding: 4px 8px;
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .cache-duration-select:hover {
+            background: #3a3a3a;
+        }
+
+        .clear-cache-btn {
+            padding: 6px 12px;
+            background: #f44336;
+            border: none;
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 12px;
+        }
+
+        .clear-cache-btn:hover {
+            background: #d32f2f;
+        }
+
+        .status {
+            margin-top: 12px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-align: center;
+            display: none;
+        }
+
+        .status.success {
+            background-color: #4caf50;
+            color: #ffffff;
+            display: block;
+        }
+
+        .status.error {
+            background-color: #f44336;
+            color: #ffffff;
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #a0a0a0;
+        }
+
+        .message {
+            text-align: center;
+            padding: 20px;
+            color: #a0a0a0;
+        }
+
+        .message-icon {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header" id="header">__MSG_extensionName__</div>
+
+    <div id="usage-container" class="usage-info">
+        <div class="loading">
+            <span class="message-icon">&#10227;</span>
+            <span>Loading usage data...</span>
+        </div>
+    </div>
+
+    <div id="charts-container" class="charts-container" style="display: none;">
+        <div class="chart-wrapper">
+            <div class="chart-title">Usage % Over Time</div>
+            <canvas id="usageTimeChart" class="chart-canvas"></canvas>
+        </div>
+        <div class="chart-wrapper">
+            <div class="chart-title">Breakdown by Model</div>
+            <canvas id="modelChart" class="chart-canvas"></canvas>
+        </div>
+    </div>
+
+    <div class="settings-section">
+        <div class="setting-item">
+            <div style="flex: 1;">
+                <div class="setting-label" id="autoRefreshLabel">__MSG_autoRefreshBadge__</div>
+                <div class="setting-description" id="autoRefreshDesc">__MSG_autoRefreshDescription__</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="autoRefreshToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-item">
+            <div style="flex: 1;">
+                <div class="setting-label" id="autoCalculateLabel">__MSG_autoCalculate__</div>
+                <div class="setting-description" id="autoCalculateDesc">__MSG_autoCalculateDescription__</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="autoCalculateToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-item">
+            <div style="flex: 1;">
+                <div class="setting-label" id="cacheDurationLabel">__MSG_cacheDuration__</div>
+                <div class="setting-description" id="cacheDurationDesc">__MSG_cacheDurationDescription__</div>
+            </div>
+            <select id="cacheDurationSelect" class="cache-duration-select">
+                <option value="1m">1 minute</option>
+                <option value="3m">3 minutes</option>
+            </select>
+        </div>
+
+        <div class="setting-item">
+            <div style="flex: 1;">
+                <div class="setting-label" id="proxyUrlLabel">Proxy URL</div>
+                <div class="setting-description" id="proxyUrlDesc">Proxy server URL for API requests (leave empty to use direct API)</div>
+                <input type="text" id="proxyUrlInput" class="cache-duration-select" style="width: 100%; margin-top: 4px;" placeholder="https://addlivetag.com/extension/cursor-used/">
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <div style="flex: 1;">
+                <div class="setting-label" id="clearCacheLabel">__MSG_clearCache__</div>
+                <div class="setting-description" id="clearCacheDesc">__MSG_clearCacheDescription__</div>
+            </div>
+            <button id="clearCacheBtn" class="clear-cache-btn">__MSG_clearCache__</button>
+        </div>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <script src="assets/js/chart.min.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>

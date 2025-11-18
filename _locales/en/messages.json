@@ -1,0 +1,69 @@
+{
+  "extensionName": {
+    "message": "Cursor Usage Calculator"
+  },
+  "extensionDescription": {
+    "message": "Calculate total requests, tokens and costs on Cursor dashboard"
+  },
+  "autoCalculate": {
+    "message": "Auto Calculate"
+  },
+  "autoCalculateDescription": {
+    "message": "Automatically calculate when entering the usage page"
+  },
+  "calculateNow": {
+    "message": "Calculate Usage"
+  },
+  "calculating": {
+    "message": "Calculating..."
+  },
+  "summaryTitle": {
+    "message": "Usage Summary"
+  },
+  "totalRequests": {
+    "message": "Total Requests"
+  },
+  "successfulRequests": {
+    "message": "Successful Requests"
+  },
+  "failedRequests": {
+    "message": "Failed Requests"
+  },
+  "totalTokens": {
+    "message": "Total Tokens"
+  },
+  "totalCost": {
+    "message": "Total Cost"
+  },
+  "successRate": {
+    "message": "Success Rate"
+  },
+  "exportData": {
+    "message": "Export Summary Data"
+  },
+  "enabled": {
+    "message": "enabled"
+  },
+  "disabled": {
+    "message": "disabled"
+  },
+  "autoRefreshBadge": {
+    "message": "Show Usage Badge"
+  },
+  "autoRefreshDescription": {
+    "message": "Display usage percentage on extension icon (refreshes every 15 minutes)"
+  },
+  "cacheDuration": {
+    "message": "Cache Duration"
+  },
+  "cacheDurationDescription": {
+    "message": "How long to cache usage data before refreshing"
+  },
+  "clearCache": {
+    "message": "Clear Cache"
+  },
+  "clearCacheDescription": {
+    "message": "Manually clear cached usage data"
+  }
+}
+

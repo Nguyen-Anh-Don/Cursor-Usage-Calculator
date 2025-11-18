@@ -1,0 +1,69 @@
+{
+  "extensionName": {
+    "message": "Cursor Usage Calculator"
+  },
+  "extensionDescription": {
+    "message": "Tính toán tổng hợp số lượng yêu cầu, token và chi phí trên trang dashboard của Cursor"
+  },
+  "autoCalculate": {
+    "message": "Tự động tính toán"
+  },
+  "autoCalculateDescription": {
+    "message": "Tự động tính toán khi vào trang sử dụng"
+  },
+  "calculateNow": {
+    "message": "Tính toán sử dụng"
+  },
+  "calculating": {
+    "message": "Đang tính toán..."
+  },
+  "summaryTitle": {
+    "message": "Tổng Hợp Sử Dụng"
+  },
+  "totalRequests": {
+    "message": "Tổng Yêu Cầu"
+  },
+  "successfulRequests": {
+    "message": "Yêu Cầu Thành Công"
+  },
+  "failedRequests": {
+    "message": "Yêu Cầu Thất Bại"
+  },
+  "totalTokens": {
+    "message": "Tổng Tokens"
+  },
+  "totalCost": {
+    "message": "Tổng Chi Phí"
+  },
+  "successRate": {
+    "message": "Tỷ Lệ Thành Công"
+  },
+  "exportData": {
+    "message": "Xuất Dữ Liệu Tổng Hợp"
+  },
+  "enabled": {
+    "message": "đã bật"
+  },
+  "disabled": {
+    "message": "đã tắt"
+  },
+  "autoRefreshBadge": {
+    "message": "Hiển thị Badge Sử dụng"
+  },
+  "autoRefreshDescription": {
+    "message": "Hiển thị phần trăm sử dụng trên icon tiện ích (tự động cập nhật mỗi 15 phút)"
+  },
+  "cacheDuration": {
+    "message": "Thời gian Cache"
+  },
+  "cacheDurationDescription": {
+    "message": "Thời gian lưu cache dữ liệu sử dụng trước khi làm mới"
+  },
+  "clearCache": {
+    "message": "Xóa Cache"
+  },
+  "clearCacheDescription": {
+    "message": "Xóa thủ công dữ liệu sử dụng đã cache"
+  }
+}
+
