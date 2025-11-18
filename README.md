@@ -376,6 +376,9 @@ MIT License - Xem file LICENSE để biết thêm chi tiết
 - Cảm ơn Chart.js cho thư viện biểu đồ mạnh mẽ
 - Cảm ơn cộng đồng open source
 
+> **Ghi chú:** Công cụ này có tham khảo ý tưởng và <br>
+một số phương pháp từ tiện ích [Cursor Usage](https://chromewebstore.google.com/detail/cursor-usage/feemeooihcjjkddafjjldpajadjhlela).
+
 ## 📞 Support
 
 Nếu gặp vấn đề hoặc có câu hỏi:
