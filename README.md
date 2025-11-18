@@ -2,6 +2,14 @@
 
 Tiện ích mở rộng Chrome giúp theo dõi và phân tích chi tiết việc sử dụng Cursor AI của bạn với các tính năng mạnh mẽ và dễ sử dụng.
 
+---
+
+## 📷 Demo giao diện
+
+![Demo ảnh Popup Extension](https://upanh.nhatkythuthuat.com/images/2025/11/18/image.png)
+
+---
+
 ## 🌟 Tính năng chính
 
 ### 📊 Hiển thị Badge tự động
