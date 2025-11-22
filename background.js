@@ -33,7 +33,7 @@ function getBillingPeriodDateRange(startOfMonth) {
         const start = new Date(now.getFullYear(), now.getMonth(), 1);
         let range = {
             startDate: start.getTime(),
-            endDate: now.getTime()
+            endDate: now.getTime(),
         };
         log("getBillingPeriodDateRange range:", range);
         return range;
@@ -42,7 +42,7 @@ function getBillingPeriodDateRange(startOfMonth) {
     const end = new Date();
     let range = {
         startDate: start.getTime(),
-        endDate: end.getTime()
+        endDate: end.getTime(),
     };
     log("getBillingPeriodDateRange custom range:", range);
     return range;
@@ -82,23 +82,17 @@ async function getCacheDuration() {
 async function getCookie() {
     try {
         return await new Promise((resolve) => {
-            chrome.cookies.get(
-                { url: "https://www.cursor.com", name: "WorkosCursorSessionToken" },
-                (cookie) => {
-                    log("getCookie cookie 1:", cookie);
-                    if (cookie) {
-                        resolve(cookie.value);
-                    } else {
-                        chrome.cookies.get(
-                            { url: "https://cursor.com", name: "WorkosCursorSessionToken" },
-                            (cookie) => {
-                                log("getCookie cookie 2:", cookie);
-                                resolve(cookie?.value || null)
-                            }
-                        );
-                    }
+            chrome.cookies.get({ url: "https://www.cursor.com", name: "WorkosCursorSessionToken" }, (cookie) => {
+                log("getCookie cookie 1:", cookie);
+                if (cookie) {
+                    resolve(cookie.value);
+                } else {
+                    chrome.cookies.get({ url: "https://cursor.com", name: "WorkosCursorSessionToken" }, (cookie) => {
+                        log("getCookie cookie 2:", cookie);
+                        resolve(cookie?.value || null);
+                    });
                 }
-            );
+            });
         });
     } catch (error) {
         log("getCookie Error getting cookie:", error);
@@ -136,9 +130,9 @@ async function getUserPlanType(cookie) {
             const response = await fetch("https://cursor.com/api/usage-summary", {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
-                credentials: "include"
+                credentials: "include",
             });
             log("getUserPlanType usage-summary response.ok:", response.ok);
             if (response.ok) {
@@ -155,9 +149,9 @@ async function getUserPlanType(cookie) {
             const response = await fetch("https://cursor.com/api/auth/stripe", {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
-                credentials: "include"
+                credentials: "include",
             });
             log("getUserPlanType auth/stripe response.ok:", response.ok);
             if (response.ok) {
@@ -183,7 +177,7 @@ async function isOnNewPricing(usageData = null) {
     if (usageData && usageData.startOfMonth) {
         return true;
     }
-    
+
     // Otherwise, check cache
     try {
         const cached = await new Promise((resolve) => {
@@ -272,9 +266,9 @@ async function updateBadge(force = false) {
             try {
                 const response = await fetch("https://cursor.com/api/auth/me", {
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
                     },
-                    credentials: "include"
+                    credentials: "include",
                 });
                 log("updateBadge fetch /api/auth/me response.ok:", response.ok);
                 if (response.ok) {
@@ -288,17 +282,15 @@ async function updateBadge(force = false) {
         }
 
         // Fetch usage data
-        const usageUrl = userId
-            ? `https://cursor.com/api/usage?user=${encodeURIComponent(userId)}`
-            : "https://cursor.com/api/usage";
+        const usageUrl = userId ? `https://cursor.com/api/usage?user=${encodeURIComponent(userId)}` : "https://cursor.com/api/usage";
 
         log("updateBadge usageUrl:", usageUrl);
 
         const usageResponse = await fetch(usageUrl, {
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            credentials: "include"
+            credentials: "include",
         });
 
         log("updateBadge usageResponse.ok:", usageResponse.ok, "status:", usageResponse.status);
@@ -336,14 +328,8 @@ async function updateBadge(force = false) {
             log("updateBadge USAGE_LIMIT_CACHE:", cached);
 
             // Check if we can use cached data
-            if (
-                cached &&
-                cached.timestamp &&
-                Date.now() - cached.timestamp < cacheDuration &&
-                cached.startOfMonth === usageData.startOfMonth &&
-                cached.currentLoad === 100
-            ) {
-                if (cached.overallRateLimitUsage) {
+            if (cached && cached.timestamp && Date.now() - cached.timestamp < cacheDuration && cached.startOfMonth === usageData.startOfMonth && typeof cached.currentLoad === "number") {
+                if (cached.overallRateLimitUsage && typeof cached.overallRateLimitUsage.currentLoad === "number") {
                     log("updateBadge using cached overallRateLimitUsage:", cached.overallRateLimitUsage);
                     usagePercentage = cached.overallRateLimitUsage.currentLoad;
                     hasUsage = true;
@@ -368,38 +354,38 @@ async function updateBadge(force = false) {
                     let page = 1;
                     const pageSize = 500;
                     let hasMore = true;
-                    
+
                     // Get proxy URL and cookie
                     const proxyUrl = await getProxyUrl();
                     const sessionCookie = await getCookie();
-                    
+
                     while (hasMore) {
                         // Use proxy if available, otherwise use direct API
                         let apiUrl = "https://cursor.com/api/dashboard/get-filtered-usage-events";
                         if (proxyUrl) {
-                            if (proxyUrl.endsWith('.php')) {
+                            if (proxyUrl.endsWith(".php")) {
                                 apiUrl = proxyUrl;
                             } else {
-                                apiUrl = (proxyUrl.endsWith('/') ? proxyUrl : proxyUrl + '/') + 'proxy.php';
+                                apiUrl = (proxyUrl.endsWith("/") ? proxyUrl : proxyUrl + "/") + "proxy.php";
                             }
                         }
-                        
+
                         const headers = {
-                            "accept": "*/*",
+                            accept: "*/*",
                             "accept-language": "en-US,en;q=0.9",
                             "content-type": "application/json",
-                            "priority": "u=1, i",
+                            priority: "u=1, i",
                             "sec-fetch-dest": "empty",
                             "sec-fetch-mode": "cors",
                             "sec-fetch-site": "none",
-                            "sec-fetch-storage-access": "active"
+                            "sec-fetch-storage-access": "active",
                         };
-                        
+
                         // Add cookie to headers if using proxy
                         if (proxyUrl && sessionCookie) {
                             headers["Cookie"] = `WorkosCursorSessionToken=${encodeURIComponent(sessionCookie)}`;
                         }
-                        
+
                         const eventsResponse = await fetch(apiUrl, {
                             method: "POST",
                             mode: "cors",
@@ -410,16 +396,16 @@ async function updateBadge(force = false) {
                                 startDate: dateRange.startDate,
                                 endDate: dateRange.endDate,
                                 page: page,
-                                pageSize: pageSize
+                                pageSize: pageSize,
                             }),
-                            credentials: proxyUrl ? "omit" : "include"
+                            credentials: proxyUrl ? "omit" : "include",
                         });
-                        
+
                         if (eventsResponse.ok) {
                             const eventsData = await eventsResponse.json();
                             if (eventsData.usageEventsDisplay && Array.isArray(eventsData.usageEventsDisplay)) {
                                 allEvents = allEvents.concat(eventsData.usageEventsDisplay);
-                                
+
                                 // Check if there are more pages
                                 const totalCount = eventsData.totalUsageEventsCount || 0;
                                 const fetchedCount = page * pageSize;
@@ -432,27 +418,27 @@ async function updateBadge(force = false) {
                             hasMore = false;
                         }
                     }
-                    
+
                     // Calculate aggregated data from events
-                    let totalCost = 0;
+                    let totalCost = 0; // Main cost from tokenUsage.totalCents
                     let totalInputTokens = 0;
                     let totalOutputTokens = 0;
                     let totalCacheWriteTokens = 0;
                     let totalCacheReadTokens = 0;
                     const modelUsage = {};
-                    
+
                     allEvents.forEach((event) => {
                         // Skip errored/aborted events
-                        if (event.kind === "USAGE_EVENT_KIND_ERRORED_NOT_CHARGED" || 
-                            event.kind === "USAGE_EVENT_KIND_ABORTED_NOT_CHARGED") {
+                        if (event.kind === "USAGE_EVENT_KIND_ERRORED_NOT_CHARGED" || event.kind === "USAGE_EVENT_KIND_ABORTED_NOT_CHARGED") {
                             return;
                         }
-                        
-                        // Calculate cost: requestsCosts + tokenUsage.totalCents
-                        const eventCost = (parseFloat(event.requestsCosts || 0) * 100) + // requestsCosts is in dollars, convert to cents
-                                        parseFloat(event.tokenUsage?.totalCents || 0);
+
+                        // Calculate total cost: requestsCosts + tokenUsage.totalCents (both divide by 100 to get cents)
+                        const eventRequestsCost = parseFloat(event.requestsCosts || 0) / 100;
+                        const eventTokenCost = parseFloat(event.tokenUsage?.totalCents || 0) / 100;
+                        const eventCost = eventRequestsCost + eventTokenCost;
                         totalCost += eventCost;
-                        
+
                         // Calculate tokens
                         if (event.tokenUsage) {
                             totalInputTokens += parseInt(event.tokenUsage.inputTokens || 0);
@@ -460,7 +446,7 @@ async function updateBadge(force = false) {
                             totalCacheWriteTokens += parseInt(event.tokenUsage.cacheWriteTokens || 0);
                             totalCacheReadTokens += parseInt(event.tokenUsage.cacheReadTokens || 0);
                         }
-                        
+
                         // Track model usage
                         const model = event.model || "default";
                         if (!modelUsage[model]) {
@@ -469,7 +455,7 @@ async function updateBadge(force = false) {
                         modelUsage[model].cost += eventCost;
                         modelUsage[model].count++;
                     });
-                    
+
                     // Exclude models if needed
                     if (excludedModels.length > 0) {
                         let adjustedCost = 0;
@@ -477,23 +463,22 @@ async function updateBadge(force = false) {
                         let adjustedOutputTokens = 0;
                         let adjustedCacheWriteTokens = 0;
                         let adjustedCacheReadTokens = 0;
-                        
+
                         allEvents.forEach((event) => {
-                            if (event.kind === "USAGE_EVENT_KIND_ERRORED_NOT_CHARGED" || 
-                                event.kind === "USAGE_EVENT_KIND_ABORTED_NOT_CHARGED") {
+                            if (event.kind === "USAGE_EVENT_KIND_ERRORED_NOT_CHARGED" || event.kind === "USAGE_EVENT_KIND_ABORTED_NOT_CHARGED") {
                                 return;
                             }
-                            
+
                             const model = event.model || "default";
-                            const shouldExclude = excludedModels.some((ex) => 
-                                model.toLowerCase().includes(ex.toLowerCase())
-                            );
-                            
+                            const shouldExclude = excludedModels.some((ex) => model.toLowerCase().includes(ex.toLowerCase()));
+
                             if (!shouldExclude) {
-                                const eventCost = (parseFloat(event.requestsCosts || 0) * 100) + 
-                                                parseFloat(event.tokenUsage?.totalCents || 0);
+                                // Calculate total cost: requestsCosts + tokenUsage.totalCents (both divide by 100 to get cents)
+                                const eventRequestsCost = parseFloat(event.requestsCosts || 0) / 100;
+                                const eventTokenCost = parseFloat(event.tokenUsage?.totalCents || 0) / 100;
+                                const eventCost = eventRequestsCost + eventTokenCost;
                                 adjustedCost += eventCost;
-                                
+
                                 if (event.tokenUsage) {
                                     adjustedInputTokens += parseInt(event.tokenUsage.inputTokens || 0);
                                     adjustedOutputTokens += parseInt(event.tokenUsage.outputTokens || 0);
@@ -502,16 +487,16 @@ async function updateBadge(force = false) {
                                 }
                             }
                         });
-                        
+
                         totalCost = adjustedCost;
                         totalInputTokens = adjustedInputTokens;
                         totalOutputTokens = adjustedOutputTokens;
                         totalCacheWriteTokens = adjustedCacheWriteTokens;
                         totalCacheReadTokens = adjustedCacheReadTokens;
                     }
-                    
+
                     const totalTokens = totalInputTokens + totalOutputTokens + totalCacheWriteTokens + totalCacheReadTokens;
-                    
+
                     // Find most used model
                     let mostUsedModel = "unknown";
                     let maxCount = 0;
@@ -521,8 +506,8 @@ async function updateBadge(force = false) {
                             mostUsedModel = model;
                         }
                     });
-                    
-                    const percentage = (totalCost / rateLimit) * 100;
+
+                    const percentage = (totalCost / (rateLimit / 100)) * 100;
                     usagePercentage = Math.min(Math.max(Math.round(percentage), 0), 100);
                     hasUsage = true;
 
@@ -535,9 +520,9 @@ async function updateBadge(force = false) {
                             membershipType: planType,
                             rateLimitCents: rateLimit,
                             primaryConcern: { type: "cost" },
-                            mostUsedModel: mostUsedModel
+                            mostUsedModel: mostUsedModel,
                         },
-                        timestamp: Date.now()
+                        timestamp: Date.now(),
                     };
 
                     log("updateBadge cacheData:", cacheData);
@@ -550,9 +535,7 @@ async function updateBadge(force = false) {
         } else {
             // Old pricing model - use request-based limits
             if (usageData["gpt-4"] && usageData["gpt-4"].maxRequestUsage) {
-                usagePercentage = Math.floor(
-                    (usageData["gpt-4"].numRequests / usageData["gpt-4"].maxRequestUsage) * 100
-                );
+                usagePercentage = Math.floor((usageData["gpt-4"].numRequests / usageData["gpt-4"].maxRequestUsage) * 100);
                 hasUsage = true;
                 log("updateBadge old pricing usagePercentage:", usagePercentage);
             } else if (Object.values(usageData).some((v) => v && typeof v === "object" && v.maxRequestUsage === null)) {
@@ -573,7 +556,7 @@ async function updateBadge(force = false) {
             } else {
                 chrome.action.setBadgeText({ text: `${usagePercentage}%` });
                 chrome.action.setBadgeBackgroundColor({
-                    color: usagePercentage >= 90 ? "#f44336" : usagePercentage >= 70 ? "#e9b33b" : "#63a11a"
+                    color: usagePercentage >= 90 ? "#f44336" : usagePercentage >= 70 ? "#e9b33b" : "#63a11a",
                 });
                 chrome.action.setBadgeTextColor({ color: "#ffffff" });
             }
@@ -590,15 +573,7 @@ async function updateBadge(force = false) {
 async function clearCache() {
     log("clearCache called");
     try {
-        await chrome.storage.local.remove([
-            "usageLogsCache",
-            "yearlyStatsCache",
-            "lastApiRequestTime",
-            IS_NEW_PRICING_CACHE,
-            USAGE_LIMIT_CACHE,
-            EXCLUDED_MODELS_CACHE,
-            BILLING_PERIOD_CACHE
-        ]);
+        await chrome.storage.local.remove(["usageLogsCache", "yearlyStatsCache", "lastApiRequestTime", IS_NEW_PRICING_CACHE, USAGE_LIMIT_CACHE, EXCLUDED_MODELS_CACHE, BILLING_PERIOD_CACHE]);
         log("clearCache done");
     } catch (error) {
         log("clearCache Error clearing cache:", error);
@@ -629,34 +604,39 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         }
         sendResponse({ success: true });
     } else if (message.action === "updateBadgeFromPopup") {
-        const settings = await chrome.storage.sync.get(["autoRefresh"]);
-        log("onMessage updateBadgeFromPopup settings:", settings, "usageLimitData:", message.usageLimitData);
-        if (settings.autoRefresh) {
-            if (message.usageLimitData) {
-                const cookie = await getCookie();
-                log("onMessage updateBadgeFromPopup cookie:", cookie);
-                const planType = cookie ? await getUserPlanType(cookie) : null;
-                log("onMessage updateBadgeFromPopup planType:", planType);
-                if (planType === "free") {
-                    chrome.action.setBadgeText({ text: "" });
-                } else if (message.usageLimitData && typeof message.usageLimitData.currentLoad === "number") {
-                    const percentage = message.usageLimitData.currentLoad;
-                    chrome.action.setBadgeText({ text: `${percentage}%` });
-                    chrome.action.setBadgeBackgroundColor({
-                        color: percentage >= 90 ? "#f44336" : percentage >= 70 ? "#e9b33b" : "#63a11a"
-                    });
-                    chrome.action.setBadgeTextColor({ color: "#ffffff" });
-                    log("onMessage updateBadgeFromPopup set badge:", percentage);
-                } else {
-                    chrome.action.setBadgeText({ text: "" });
-                    log("onMessage updateBadgeFromPopup set badge: empty");
-                }
+        log("onMessage updateBadgeFromPopup usageLimitData:", message.usageLimitData);
+        // Update badge regardless of autoRefresh setting when manually triggered from popup
+        if (message.usageLimitData) {
+            const cookie = await getCookie();
+            log("onMessage updateBadgeFromPopup cookie:", cookie);
+            const planType = cookie ? await getUserPlanType(cookie) : null;
+            log("onMessage updateBadgeFromPopup planType:", planType);
+            if (planType === "free") {
+                chrome.action.setBadgeText({ text: "" });
+                log("onMessage updateBadgeFromPopup set badge: empty (free plan)");
+            } else if (message.usageLimitData && typeof message.usageLimitData.currentLoad === "number") {
+                const percentage = message.usageLimitData.currentLoad;
+                chrome.action.setBadgeText({ text: `${percentage}%` });
+                chrome.action.setBadgeBackgroundColor({
+                    color: percentage >= 90 ? "#f44336" : percentage >= 70 ? "#e9b33b" : "#63a11a",
+                });
+                chrome.action.setBadgeTextColor({ color: "#ffffff" });
+                log("onMessage updateBadgeFromPopup set badge:", percentage);
             } else {
-                await updateBadge(false);
+                chrome.action.setBadgeText({ text: "" });
+                log("onMessage updateBadgeFromPopup set badge: empty (no valid data)");
             }
         } else {
-            chrome.action.setBadgeText({ text: "" });
-            await chrome.storage.local.remove([USAGE_LIMIT_CACHE]);
+            // If no usageLimitData provided, try to update badge using updateBadge function
+            // but only if autoRefresh is enabled (to avoid unnecessary API calls)
+            const settings = await chrome.storage.sync.get(["autoRefresh"]);
+            if (settings.autoRefresh) {
+                await updateBadge(false);
+            } else {
+                // If autoRefresh is off and no data provided, clear badge
+                chrome.action.setBadgeText({ text: "" });
+                log("onMessage updateBadgeFromPopup set badge: empty (no data and autoRefresh off)");
+            }
         }
         sendResponse({ success: true });
     } else if (message.action === "clearCache") {
@@ -700,7 +680,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
             autoRefresh: true, // Default true
             showLogs: false,
             showStats: false,
-            cacheDuration: "1m"
+            cacheDuration: "1m",
         });
         log("onInstalled set defaults");
     } else if (details.reason === "update") {
