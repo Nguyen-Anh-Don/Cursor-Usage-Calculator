@@ -17,7 +17,7 @@ A Chrome extension that helps you track and analyze your Cursor AI usage in deta
 
 ## 📷 Demo Interface
 
-![Demo ảnh Popup Extension](https://upanh.nhatkythuthuat.com/images/2025/11/18/image.png)
+![Demo ảnh Popup Extension](https://upanh.nhatkythuthuat.com/images/2025/11/22/image033a060943c7345c.png)
 
 ---
 
@@ -412,7 +412,7 @@ Tiện ích mở rộng Chrome giúp theo dõi và phân tích chi tiết việc
 
 ## 📷 Demo giao diện
 
-![Demo ảnh Popup Extension](https://upanh.nhatkythuthuat.com/images/2025/11/18/image.png)
+![Demo ảnh Popup Extension](https://upanh.nhatkythuthuat.com/images/2025/11/22/image033a060943c7345c.png)
 
 ---
 
